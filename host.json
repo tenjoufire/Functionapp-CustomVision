@@ -7,5 +7,14 @@
                 "isEnabled": true
             }
         }
+    },
+    "extensions": {
+        "cosmosDB": {
+            "connectionMode": "Gateway",
+            "protocol": "Https",
+            "leaseOptions": {
+                "leasePrefix": "prefix1"
+            }
+        }
     }
 }

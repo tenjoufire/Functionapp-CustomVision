@@ -7,13 +7,21 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Configuration;
 using Newtonsoft.Json;
+using Microsoft.Azure.WebJobs.Extensions.CosmosDB;
+using System.Globalization;
 
 namespace katsujim.Function
 {
     public static class BlobTriggerCustomVision
     {
         [FunctionName("BlobTriggerCustomVision")]
-        public static async void Run([BlobTrigger("pictures/{name}", Connection = "storagekatsujimcpaas_STORAGE")] Stream myBlob, string name, ILogger log)
+        public static void Run([BlobTrigger("pictures/{name}", Connection = "storagekatsujimcpaas_STORAGE")] Stream myBlob, string name,
+        [CosmosDB(
+            databaseName: "content_metadata",
+            collectionName:"CustomVision",
+            ConnectionStringSetting="CosmosDBConnection"
+        )]out dynamic document,
+        ILogger log)
         {
             log.LogInformation($"C# Blob trigger function Processed blob\n Name:{name} \n Size: {myBlob.Length} Bytes");
 
@@ -23,7 +31,7 @@ namespace katsujim.Function
             // Request headers - replace this example key with your valid Prediction-Key.
             client.DefaultRequestHeaders.Add("Prediction-Key", predectionKey);
 
-            string peoplecountString = "";
+            int peopleCount = 0;
 
             // Prediction URL - replace this example URL with your valid Prediction URL.
             string url = endpoint;
@@ -57,15 +65,18 @@ namespace katsujim.Function
             using (var content = new ByteArrayContent(byteData))
             {
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                response = await client.PostAsync(url, content);
+                response = client.PostAsync(url, content).Result;
                 //Console.WriteLine(await response.Content.ReadAsStringAsync());
-                var jsonString = await response.Content.ReadAsStringAsync();
-                peoplecountString = CountPeople(jsonString,0.4);
+                var jsonString = response.Content.ReadAsStringAsync().Result;
+                peopleCount = CountPeople(jsonString, 0.4);
             }
-            log.LogInformation(peoplecountString);
+            log.LogInformation($"{peopleCount}人検出されました");
+
+            var culture = CultureInfo.CreateSpecificCulture("ja-JP");
+            document = new { Id = Guid.NewGuid(), Timestring = DateTime.UtcNow.AddHours(9.0).ToString("u", culture), PeopleCount = peopleCount, Place = "TEST" };
         }
 
-        private static string CountPeople(string jsonString, double th)
+        private static int CountPeople(string jsonString, double th)
         {
             var peopleCount = 0;
             var jsonobject = JsonConvert.DeserializeObject<PredictionResult>(jsonString);
@@ -79,7 +90,7 @@ namespace katsujim.Function
                 }
             }
 
-            return $"{peopleCount}人が検出されました";
+            return peopleCount;
         }
     }
 
@@ -97,5 +108,13 @@ namespace katsujim.Function
         public string tagId { get; set; }
         public string tagName { get; set; }
         public double probability { get; set; }
+    }
+
+    public class NumOfPeople
+    {
+        public string Id { get; set; }
+        public string TimeString { get; set; }
+        public int PeopleCount { get; set; }
+        public string Place { get; set; }
     }
 }
