@@ -73,7 +73,14 @@ namespace katsujim.Function
             log.LogInformation($"{peopleCount}人検出されました");
 
             var culture = CultureInfo.CreateSpecificCulture("ja-JP");
-            document = new { Id = Guid.NewGuid(), Timestring = DateTime.UtcNow.AddHours(9.0).ToString("u", culture), PeopleCount = peopleCount, Place = "TEST" };
+            document = new { 
+                id = Guid.NewGuid(), 
+                Timestring = DateTime.UtcNow.AddHours(9.0).ToString("u", culture), 
+                Date = DateTime.UtcNow.AddHours(9.0).ToString("d", culture), 
+                Time = DateTime.UtcNow.AddHours(9.0).ToString("t", culture),
+                PeopleCount = peopleCount, 
+                Place = "TEST" 
+                };
         }
 
         private static int CountPeople(string jsonString, double th)
