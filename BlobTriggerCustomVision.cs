@@ -121,6 +121,8 @@ namespace katsujim.Function
     {
         public string Id { get; set; }
         public string TimeString { get; set; }
+        public string Date { get; set; }
+        public string Time { get; set; }
         public int PeopleCount { get; set; }
         public string Place { get; set; }
     }
