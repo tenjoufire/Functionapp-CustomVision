@@ -38,6 +38,9 @@ namespace katsujim.Function
             HttpResponseMessage response;
             byte[] byteData;
 
+            string dstring = name.Split('+')[0];
+            DateTime dt = DateTime.ParseExact(dstring,"yyyy-MM-ddTHH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+
             using (MemoryStream ms = new MemoryStream())
             {
 
@@ -75,9 +78,9 @@ namespace katsujim.Function
             var culture = CultureInfo.CreateSpecificCulture("ja-JP");
             document = new { 
                 id = Guid.NewGuid(), 
-                Timestring = DateTime.UtcNow.AddHours(9.0).ToString("u", culture), 
-                Date = DateTime.UtcNow.AddHours(9.0).ToString("d", culture), 
-                Time = DateTime.UtcNow.AddHours(9.0).ToString("t", culture),
+                Timestring = dt.ToString("u", culture), 
+                Date = dt.ToString("d", culture), 
+                Time = dt.ToString("t", culture),
                 PeopleCount = peopleCount, 
                 Place = "TEST" 
                 };

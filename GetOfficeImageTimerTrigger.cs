@@ -13,7 +13,7 @@ namespace katsujim.Function
     public static class GetOfficeImageTimerTrigger
     {
         [FunctionName("GetOfficeImageTimerTrigger")]
-        public static void Run([TimerTrigger("0 */2 * * * *")] TimerInfo myTimer, ILogger log)
+        public static void Run([TimerTrigger("0 */30 * * * *")] TimerInfo myTimer, ILogger log)
         {
             string ConnectionString = Environment.GetEnvironmentVariable("storagekatsujimcpaas_STORAGE");
             BlobServiceClient blobServiceClient = new BlobServiceClient(ConnectionString);
