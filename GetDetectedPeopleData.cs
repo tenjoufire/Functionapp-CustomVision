@@ -29,9 +29,9 @@ namespace katsujim.Function
             queryDate = queryDate ?? data?.queryDate;
 
             CosmosClient client = new CosmosClient(Environment.GetEnvironmentVariable("CosmosDBConnection"));
-            Container container = client.GetDatabase("content_metadata").GetContainer("CustomVisionDemo");
+            Container container = client.GetDatabase("content_metadata").GetContainer("CustomVision");
 
-            var quetyText = $"SELECT * FROM c WHERE c.Date = '{queryDate}'";
+            var quetyText = $"SELECT * FROM c WHERE c.Date = '{queryDate}' ORDER BY c.Time ASC";
             FeedIterator<NumOfPeople> queryResultSetIterator = container.GetItemQueryIterator<NumOfPeople>(quetyText);
             List<NumOfPeople> people = new List<NumOfPeople>();
 
