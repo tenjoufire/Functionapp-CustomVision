@@ -27,10 +27,10 @@ namespace katsujim.Function
 
             string predectionKey = Environment.GetEnvironmentVariable("PREDICTION_KEY");
             string endpoint = Environment.GetEnvironmentVariable("ENDPOINT");
+            double th = double.Parse(Environment.GetEnvironmentVariable("THRESHOLD"));
             var client = new HttpClient();
             // Request headers - replace this example key with your valid Prediction-Key.
             client.DefaultRequestHeaders.Add("Prediction-Key", predectionKey);
-
             int peopleCount = 0;
 
             // Prediction URL - replace this example URL with your valid Prediction URL.
@@ -68,7 +68,7 @@ namespace katsujim.Function
                 response = client.PostAsync(url, content).Result;
                 //Console.WriteLine(await response.Content.ReadAsStringAsync());
                 var jsonString = response.Content.ReadAsStringAsync().Result;
-                peopleCount = CountPeople(jsonString, 0.4);
+                peopleCount = CountPeople(jsonString, th);
             }
             log.LogInformation($"{peopleCount}人検出されました");
 
