@@ -1,13 +1,10 @@
 using System;
 using System.IO;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Configuration;
 using Newtonsoft.Json;
-using Microsoft.Azure.WebJobs.Extensions.CosmosDB;
 using System.Globalization;
 
 namespace katsujim.Function
@@ -78,9 +75,9 @@ namespace katsujim.Function
             var culture = CultureInfo.CreateSpecificCulture("ja-JP");
             document = new { 
                 id = Guid.NewGuid(), 
-                Timestring = dt.ToString("u", culture), 
-                Date = dt.ToString("d", culture), 
-                Time = dt.ToString("t", culture),
+                Timestring = dt.AddHours(9.0).ToString("u", culture), 
+                Date = dt.AddHours(9.0).ToString("d", culture), 
+                Time = dt.AddHours(9.0).ToString("t", culture),
                 PeopleCount = peopleCount, 
                 Place = "TEST" 
                 };
