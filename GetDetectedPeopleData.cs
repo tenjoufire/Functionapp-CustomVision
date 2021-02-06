@@ -31,7 +31,7 @@ namespace katsujim.Function
             CosmosClient client = new CosmosClient(Environment.GetEnvironmentVariable("CosmosDBConnection"));
             Container container = client.GetDatabase("content_metadata").GetContainer("CustomVision");
 
-            var quetyText = $"SELECT * FROM c WHERE c.Date = '{queryDate}' ORDER BY c.Time ASC";
+            var quetyText = $"SELECT * FROM c WHERE c.Date = '{queryDate}' ORDER BY c.TimeString ASC";
             FeedIterator<NumOfPeople> queryResultSetIterator = container.GetItemQueryIterator<NumOfPeople>(quetyText);
             List<NumOfPeople> people = new List<NumOfPeople>();
 
